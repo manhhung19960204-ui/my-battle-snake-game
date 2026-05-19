@@ -1,14 +1,12 @@
 #include "scr_welcome.h"
 
-#define WELCOME_TEXT_LINE_1_LEN		(7)
-#define WELCOME_TEXT_LINE_2_LEN		(2)
-#define WELCOME_TEXT_LINE_3_LEN		(7)
-#define WELCOME_TEXT_TOTAL_LEN		(WELCOME_TEXT_LINE_1_LEN + WELCOME_TEXT_LINE_2_LEN + WELCOME_TEXT_LINE_3_LEN)
+#define WELCOME_TEXT_LINE_1_LEN		(8)
+#define WELCOME_TEXT_LINE_2_LEN		(5)
+#define WELCOME_TEXT_TOTAL_LEN		(WELCOME_TEXT_LINE_1_LEN + WELCOME_TEXT_LINE_2_LEN)
 
 static uint8_t welcome_text_index = 0;
 static const char* welcome_text_line_1 = "Welcome";
-static const char* welcome_text_line_2 = "to";
-static const char* welcome_text_line_3 = "AK-Base";
+static const char* welcome_text_line_2 = "to AK";
 
 static void view_scr_welcome();
 
@@ -46,15 +44,11 @@ void view_scr_welcome() {
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
-	view_render.setCursor(80, 2);
+	view_render.setCursor(76, 12);
 	welcome_print_text_partial(welcome_text_line_1, welcome_text_index);
-	view_render.setCursor(95, 14);
+	view_render.setCursor(84, 25);
 	if (welcome_text_index > WELCOME_TEXT_LINE_1_LEN) {
 		welcome_print_text_partial(welcome_text_line_2, welcome_text_index - WELCOME_TEXT_LINE_1_LEN);
-	}
-	view_render.setCursor(80, 26);
-	if (welcome_text_index > (WELCOME_TEXT_LINE_1_LEN + WELCOME_TEXT_LINE_2_LEN)) {
-		welcome_print_text_partial(welcome_text_line_3, welcome_text_index - WELCOME_TEXT_LINE_1_LEN - WELCOME_TEXT_LINE_2_LEN);
 	}
 }
 
@@ -90,10 +84,11 @@ void scr_welcome_handle(ak_msg_t *msg) {
 		SCREEN_TRAN(scr_idle_handle, &scr_idle);
 	} break;
 
+	case AC_DISPLAY_BUTON_UP_PRESSED:
 	case AC_DISPLAY_BUTON_DOWN_PRESSED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTON_%s_PRESSED\n", msg->sig == AC_DISPLAY_BUTON_UP_PRESSED ? "UP" : "DOWN");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
+		SCREEN_TRAN(scr_qrcode_handle, &scr_qrcode);
 	} break;
 
 	default:
