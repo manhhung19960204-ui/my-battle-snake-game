@@ -142,7 +142,7 @@ define MEMORY_INFO_COLLECT
 endef
 
 define MEMORY_INFO_PRINT
-	echo "SOC name: $(SOC_NAME)"; \
+	echo "MCU name: $(SOC_NAME)"; \
 	printf -- " - Boot/Reserved Flash : 0x%08X - 0x%08X (%d bytes)\n" $(FLASH_BASE_ADDR_VAL) $$BOOT_END_ADDR $$BOOT_RESERVED_BYTES; \
 	printf -- " - Application Flash   : 0x%08X - 0x%08X (%d bytes)\n" $(APP_START_ADDR_VAL) $$SOC_FLASH_END_ADDR $$APP_FLASH_BYTES; \
 	printf -- " - Flash info          : %d bytes / %d bytes\n" $$FLASH_USED $$APP_FLASH_BYTES; \
@@ -230,7 +230,7 @@ LDFLAGS	=	-Map=$(OBJECTS_DIR)/$(PROJECT).map	\
 		$(LIB_PATH)	\
 		$(LIBC) $(LIBM) $(LIBSTDCPP_NANO) $(LIBGCC) $(LIBGCOV) $(LIBFPU) $(LIBRDPMON)
 
-all: create $(TARGET)
+all: create $(TARGET) info
 
 create:
 	$(Print) CREATE $(OBJECTS_DIR) folder
