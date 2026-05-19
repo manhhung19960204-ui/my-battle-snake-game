@@ -46,16 +46,16 @@ void scr_startup_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_MODE_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_RELEASED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
+	case AC_DISPLAY_BUTON_MODE_PRESSED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO);
+		SCREEN_TRAN(scr_qrcode_handle, &scr_qrcode);
 	}
 		break;
 
 	case AC_DISPLAY_SHOW_LOGO: {
 		APP_DBG_SIG("AC_DISPLAY_SHOW_LOGO\n");
-		SCREEN_TRAN(scr_info_handle, &scr_info);
+		SCREEN_TRAN(scr_qrcode_handle, &scr_qrcode);
 	}
 		break;
 
