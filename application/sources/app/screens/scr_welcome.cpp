@@ -58,7 +58,7 @@ void view_scr_welcome() {
 	}
 }
 
-void scr_welcome_handle(ak_msg_t* msg) {
+void scr_welcome_handle(ak_msg_t *msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
@@ -66,8 +66,7 @@ void scr_welcome_handle(ak_msg_t* msg) {
 		BUZZER_PlaySound(BUZZER_SOUND_WELCOME);
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL, TIMER_PERIODIC);
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE, AC_DISPLAY_IDLE_INTERVAL, TIMER_ONE_SHOT);
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_WELCOME_TEXT_ANIM_TICK: {
 		APP_DBG_SIG("AC_DISPLAY_WELCOME_TEXT_ANIM_TICK\n");
@@ -77,29 +76,25 @@ void scr_welcome_handle(ak_msg_t* msg) {
 		else {
 			timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
 		}
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
 		SCREEN_TRAN(scr_idle_handle, &scr_idle);
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_SHOW_IDLE: {
 		APP_DBG_SIG("AC_DISPLAY_SHOW_IDLE\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
 		SCREEN_TRAN(scr_idle_handle, &scr_idle);
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
 		SCREEN_TRAN(scr_idle_handle, &scr_idle);
-	}
-		break;
+	} break;
 
 	default:
 		break;

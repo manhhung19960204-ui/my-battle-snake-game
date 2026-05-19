@@ -74,27 +74,24 @@ void view_scr_qrcode() {
 	view_render.print(QRCODE_TEXT);
 }
 
-void scr_qrcode_handle(ak_msg_t* msg) {
+void scr_qrcode_handle(ak_msg_t *msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		qrcode_build_bitmap();
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE, AC_DISPLAY_LOGO_INTERVAL, TIMER_ONE_SHOT);
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_SHOW_IDLE: {
 		APP_DBG_SIG("AC_DISPLAY_SHOW_IDLE\n");
 		SCREEN_TRAN(scr_welcome_handle, &scr_welcome);
-	}
-		break;
+	} break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
 		SCREEN_TRAN(scr_welcome_handle, &scr_welcome);
-	}
-		break;
+	} break;
 
 	default:
 		break;
