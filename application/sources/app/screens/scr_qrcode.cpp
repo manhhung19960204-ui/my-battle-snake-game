@@ -7,8 +7,8 @@
 #define QRCODE_BITMAP_STRIDE	((QRCODE_MAX_SIZE + 7) / 8)
 #define QRCODE_BITMAP_SIZE		(QRCODE_BITMAP_STRIDE * QRCODE_MAX_SIZE)
 
-#define QRCODE_TEXT				"The AK Foundation"
-#define QRCODE_TEXT_AXIS_X		(13)
+#define QRCODE_TEXT				"GitHub URL"
+#define QRCODE_TEXT_AXIS_X		(35)
 #define QRCODE_TEXT_AXIS_Y		(55)
 
 static uint8_t qrcode_bitmap[QRCODE_BITMAP_SIZE];
@@ -78,7 +78,9 @@ void scr_qrcode_handle(ak_msg_t *msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		qrcode_build_bitmap();
+		if (qrcode_bitmap_size == 0) {
+			qrcode_build_bitmap();
+		}
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE, AC_DISPLAY_LOGO_INTERVAL, TIMER_ONE_SHOT);
 	} break;
 
@@ -87,8 +89,11 @@ void scr_qrcode_handle(ak_msg_t *msg) {
 		SCREEN_TRAN(scr_welcome_handle, &scr_welcome);
 	} break;
 
+	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	case AC_DISPLAY_BUTON_MODE_PRESSED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTON_%s_PRESSED\n", msg->sig == AC_DISPLAY_BUTON_MODE_PRESSED ? "MODE" :\
+													 msg->sig == AC_DISPLAY_BUTON_DOWN_PRESSED ? "DOWN" : "UP");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
 		SCREEN_TRAN(scr_welcome_handle, &scr_welcome);
 	} break;
