@@ -6,5 +6,9 @@
 // scr_welcome
 extern const unsigned char PROGMEM bitmap_snake[];
 extern const unsigned char PROGMEM bitmap_menu[];
+extern const unsigned char PROGMEM bitmap_menu_1[];
+extern const unsigned char PROGMEM bitmap_menu_2[];
+extern const unsigned char PROGMEM bitmap_menu_3[];
+extern const unsigned char PROGMEM bitmap_menu_4[];
 
 #endif //__SCREENS_BITMAP_H__
