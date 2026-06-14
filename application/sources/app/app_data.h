@@ -48,11 +48,23 @@ typedef struct {
 	uint8_t is_power_on_reset;
 } boot_app_share_data_t;
 
+typedef enum {
+    GAME_MODE_SINGLE = 0,
+    GAME_MODE_COM,
+} game_mode_t;
+
+typedef struct {
+    game_mode_t mode;   // Single hay COM
+    uint16_t score;
+    uint16_t high_score;
+} app_data_t;
+
 /******************************************************************************
 * RS485-MODBUS
 *******************************************************************************/
 #if defined (TASK_MBMASTER_EN)
 extern xMBHandle xMBMMaster;
-#endif
+extern app_data_t app_data;
 
+#endif
 #endif //__APP_DATA_H__

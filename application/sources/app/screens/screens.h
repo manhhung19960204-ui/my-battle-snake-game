@@ -48,4 +48,10 @@ extern view_dynamic_t dyn_view_menu;
 extern view_screen_t scr_menu;
 extern void scr_menu_handle(ak_msg_t* msg);
 
+// scr_menu
+extern view_dynamic_t dyn_view_game;
+extern view_screen_t scr_game;
+extern void scr_game_handle(ak_msg_t* msg);
+extern void view_scr_game(ak_msg_t* msg);
+
 #endif //__SCREENS_H__
