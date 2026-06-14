@@ -133,3 +133,4 @@ const unsigned char PROGMEM bitmap_menu_1 [] = {};
 const unsigned char PROGMEM bitmap_menu_2 [] ={};
 const unsigned char PROGMEM bitmap_menu_3 [] ={};
 const unsigned char PROGMEM bitmap_menu_4 [] ={};
+const unsigned char PROGMEM bitmap_screen_game [] ={};

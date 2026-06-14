@@ -10,5 +10,6 @@ extern const unsigned char PROGMEM bitmap_menu_1[];
 extern const unsigned char PROGMEM bitmap_menu_2[];
 extern const unsigned char PROGMEM bitmap_menu_3[];
 extern const unsigned char PROGMEM bitmap_menu_4[];
+extern const unsigned char PROGMEM bitmap_screen_game[];
 
 #endif //__SCREENS_BITMAP_H__

@@ -16,7 +16,7 @@ static const menu_item_t menu_list[] = {
     {bitmap_menu_4, "Exit"}
 };
 
-static uint8_t current_menu_index = 0; // Biến ghi nhớ bạn đang đứng ở đâu
+static uint8_t current_menu_index = 0; 
 
 view_dynamic_t dyn_view_menu = {
 	{
@@ -53,30 +53,49 @@ void view_scr_menu() {
 }
 
 void scr_menu_handle(ak_msg_t *msg) {
-	switch (msg->sig) {
-	case SCREEN_ENTRY: {
-		APP_DBG_SIG("SCREEN_ENTRY\n");
-		BUZZER_PlaySound(BUZZER_SOUND_WELCOME);
-		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL, TIMER_PERIODIC);
-		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE, AC_DISPLAY_IDLE_INTERVAL, TIMER_ONE_SHOT);
-		view_scr_menu(); 
-	} break;
+    switch (msg->sig) {
 
-	case AC_DISPLAY_BUTON_UP_PRESSED: 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED: {
-    // Tăng/giảm index
-    if (msg->sig == AC_DISPLAY_BUTON_UP_PRESSED) {
+    case SCREEN_ENTRY: {
+        APP_DBG_SIG("SCREEN_ENTRY\n");
+        BUZZER_PlaySound(BUZZER_SOUND_WELCOME);
+        timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL, TIMER_PERIODIC);
+        timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE, AC_DISPLAY_IDLE_INTERVAL, TIMER_ONE_SHOT);
+        view_scr_menu();
+    } break;
+
+    case AC_DISPLAY_BUTON_UP_PRESSED: {
         if (current_menu_index > 0) current_menu_index--;
-        else current_menu_index = TOTAL_MENU_ITEMS - 1; // Vòng lại cuối
-    } else {
-        current_menu_index++;
-        if (current_menu_index >= TOTAL_MENU_ITEMS) current_menu_index = 0; // Vòng lại đầu
-    }
-    
-    view_scr_menu(); 
-	} break;
+        else current_menu_index = TOTAL_MENU_ITEMS - 1;
+        view_scr_menu();
+    } break;
 
-	default:
-		break;
-	}
+    case AC_DISPLAY_BUTON_DOWN_PRESSED: {
+        current_menu_index++;
+        if (current_menu_index >= TOTAL_MENU_ITEMS) current_menu_index = 0;
+        view_scr_menu();
+    } break;
+
+    case AC_DISPLAY_BUTON_MODE_PRESSED: {
+        switch (current_menu_index) {
+            case 0: // Single
+                app_data.mode = GAME_MODE_SINGLE;
+                SCREEN_TRAN(scr_game_handle, &scr_game);
+                break;
+            case 1: // COM
+                app_data.mode = GAME_MODE_COM;
+                SCREEN_TRAN(scr_game_handle, &scr_game);
+                break;
+            case 2: // Setting
+                // SCREEN_TRAN(scr_setting_handle, &scr_setting);
+                break;
+            case 3: // Exit
+                SCREEN_BACK();
+                break;
+        }
+    } break;
+
+    default:
+        break;
+    }
 }
+
