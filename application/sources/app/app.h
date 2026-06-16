@@ -52,7 +52,8 @@ enum {
 	FW_SAFE_MODE_RES_OK,
 	FW_UPDATE_SM_BUSY,
 	FW_PACKED_TIMEOUT,
-	FW_CHECKING_REQ
+	FW_CHECKING_REQ , 
+	AC_DISPLAY_GAME_TICK,
 };
 
 /*****************************************************************************/
