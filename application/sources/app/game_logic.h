@@ -29,20 +29,19 @@ typedef struct {
 
 typedef struct {
     snake_t player;
-    snake_t com;        // chỉ dùng ở mode COM
+    snake_t com;        
     point_t food;
-    uint16_t tick;      // đếm thời gian
-    uint16_t max_tick;  // khi hết giờ → kết thúc
-    bool running;
+    uint16_t tick;      
+    uint16_t max_tick;  
 } game_state_t;
 
 extern game_state_t game;
 
 // API
 void game_init(void);
-void game_tick(void);          // gọi mỗi timer tick
+void game_tick(void);          
 void game_player_turn(uint8_t dir);
 bool game_is_over(void);
-uint8_t game_get_winner(void); // 0=player, 1=COM, 2=draw
+uint8_t game_get_winner(void); 
 
 #endif

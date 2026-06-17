@@ -23,7 +23,7 @@ void game_init(void) {
     game.player.body[1] = {4, 5};
     game.player.body[2] = {3, 5};
 
-    // Reset COM (chỉ mode COM)
+    // Reset COM 
     if (app_data.mode == GAME_MODE_COM) {
         game.com.length = 3;
         game.com.dir    = DIR_LEFT;
@@ -35,7 +35,7 @@ void game_init(void) {
     }
 
     game.tick     = 0;
-    game.max_tick = 300; // 300 tick = khoảng 30s nếu tick 100ms
+    game.max_tick = 300; 
     game.running  = true;
 
     spawn_food();
@@ -88,7 +88,7 @@ void game_tick(void) {
         spawn_food();
     }
 
-    // Đếm thời gian (chỉ COM mode)
+    // Đếm thời gian
     if (app_data.mode == GAME_MODE_COM) {
         game.tick++;
         if (game.tick >= game.max_tick) {
@@ -96,12 +96,12 @@ void game_tick(void) {
         }
     }
 
-    // Nếu chơi đơn mà player chết -> Thua, thoát game
+    // Nếu chơi đơn mà player chết
     if (app_data.mode == GAME_MODE_SINGLE && !game.player.alive) {
         game.running = false;
     }
 
-    // Nếu chơi với COM, chỉ cần 1 trong 2 con chết (Player chết HOẶC COM chết) -> Kết thúc game ngay
+    // Nếu chơi với COM, chỉ cần 1 trong 2 con chết -> Kết thúc game ngay
     if (app_data.mode == GAME_MODE_COM) {
         if (!game.player.alive || !game.com.alive) {
             game.running = false;

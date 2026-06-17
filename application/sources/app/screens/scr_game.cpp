@@ -39,7 +39,7 @@ void view_scr_game() {
         }
     }
 
-    // ✅ Vẽ thân rắn COM
+    // thân rắn COM
     if (app_data.mode == GAME_MODE_COM) {
         for (int i = 0; i < game.com.length; i++) {
             int cx = 1 + game.com.body[i].x * CELL_SIZE;
@@ -65,7 +65,7 @@ void view_scr_game() {
     view_render.setCursor(2, 2);
     view_render.print(game.player.score);
 
-    // ✅ Hiện điểm COM
+    // Score COM
     if (app_data.mode == GAME_MODE_COM) {
         view_render.setCursor(90, 2);
         view_render.print(game.com.score);
