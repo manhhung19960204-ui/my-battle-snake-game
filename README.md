@@ -1,5 +1,5 @@
 ## AK Embedded Base Kit - STM32L151 - Lập trình nhúng vi điều khiển
 
-[Click vào đây để xem video Snake Battle](https://www.youtube.com/shorts/dQYAMA1sNvM)
+[Xem video demo tại đây](hardware/Video/Snake-intro.mp4)
 ![Snake vs COM](hardware/images/Snake-vs-COM.png)
-![Snake vs COM](hardware/images/Snake-vs-COM 2.png)
+![Snake vs COM](hardware/images/Snake-vs-COM-2.png)
