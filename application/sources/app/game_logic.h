@@ -38,7 +38,6 @@ typedef struct {
 
 extern game_state_t game;
 
-// API
 void game_init(void);
 void game_tick(void);          
 void game_player_turn(uint8_t dir);

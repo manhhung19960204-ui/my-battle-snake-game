@@ -12,7 +12,6 @@ static void move_snake(snake_t* s);
 static void grow_snake(snake_t* s);
 static void ai_move(void);
 
-// ============ INIT ============
 void game_init(void) {
     // Reset player
     game.player.length = 3;
@@ -41,7 +40,6 @@ void game_init(void) {
     spawn_food();
 }
 
-// ============ TICK ============
 void game_tick(void) {
     if (!game.running) return;
 
@@ -109,7 +107,6 @@ void game_tick(void) {
     }
 }
 
-// ============ HELPER ============
 void game_player_turn(uint8_t dir) {
     // Không cho quay 180 độ
     if (dir == DIR_UP    && game.player.dir == DIR_DOWN)  return;
@@ -133,7 +130,6 @@ uint8_t game_get_winner(void) {
     return 2; // draw
 }
 
-// ============ PRIVATE ============
 static void spawn_food(void) {
     game.food.x = rand() % GRID_W;
     game.food.y = rand() % GRID_H;
