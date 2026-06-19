@@ -33,6 +33,7 @@ typedef struct {
     point_t food;
     uint16_t tick;      
     uint16_t max_tick;  
+    bool running;
 } game_state_t;
 
 extern game_state_t game;
