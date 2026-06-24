@@ -1,7 +1,8 @@
 # SNAKE BATTLE GAME DEMO - STM32L151
-[![Xem Video Demo](https://img.youtube.com/vi/dQYAMA1sNvM/0.jpg)](https://youtu.be/pnLWwZDa1V4)
-<video src="./hardware/Video/Snake-intro.mp4" controls="controls" width="100%"></video>
-> **Xem video demo :** [https://youtu.be/pnLWwZDa1V4](https://youtu.be/pnLWwZDa1V4)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/45e36031-dd04-4b0a-a0d9-78c8eb257cc8" controls width="480"></video>
+</div>
+
 ## INTRODUCE AND GAMEPLAY 
 - There is two mode to play this game , SINGLE PLAY AND COMPUTER PLAY 
 - SINGLE PLAY : You will control snake to eat apple , your snake will bigger every time you eat , and if you touch your tail , you will lose
