@@ -9,6 +9,7 @@
 #define GRID_H        10   // số ô dọc  
 #define CELL_SIZE     6    // pixel mỗi ô
 #define SNAKE_MAX_LEN 50
+#define FOOD_MAX      3
 
 #define DIR_UP    0
 #define DIR_DOWN  1
@@ -30,8 +31,9 @@ typedef struct {
 typedef struct {
     snake_t player;
     snake_t com;        
-    point_t food;
-    uint16_t tick;      
+    point_t  food[FOOD_MAX]; 
+    uint8_t  food_count;      
+    uint16_t tick;
     uint16_t max_tick;  
     bool running;
 } game_state_t;

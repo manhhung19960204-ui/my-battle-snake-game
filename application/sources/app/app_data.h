@@ -1,70 +1,78 @@
-#ifndef __APP_DATA_H__
-#define __APP_DATA_H__
+    #ifndef __APP_DATA_H__
+    #define __APP_DATA_H__
 
-#include <stdint.h>
+    #include <stdint.h>
 
-#include "sys_boot.h"
-#include "sys_dbg.h"
-#include "app.h"
-#include "buzzer.h"
+    #include "sys_boot.h"
+    #include "sys_dbg.h"
+    #include "app.h"
+    #include "buzzer.h"
 
-#if defined (TASK_MBMASTER_EN)
-#include "mbport.h"
-#include "mbm.h"
-#include "common/mbportlayer.h"
-#endif
+    #if defined (TASK_MBMASTER_EN)
+    #include "mbport.h"
+    #include "mbm.h"
+    #include "common/mbportlayer.h"
+    #endif
 
-/******************************************************************************
-* IF Type
-*******************************************************************************/
-/** RF24 interface for modules
- *
-*/
-#define IF_TYPE_RF24_MIN					(0)
-#define IF_TYPE_RF24_GW						(0)
-#define IF_TYPE_RF24_AC						(1)
-#define IF_TYPE_RF24_MAX					(99)
+    /******************************************************************************
+    * IF Type
+    *******************************************************************************/
+    /** RF24 interface for modules
+    *
+    */
+    #define IF_TYPE_RF24_MIN					(0)
+    #define IF_TYPE_RF24_GW						(0)
+    #define IF_TYPE_RF24_AC						(1)
+    #define IF_TYPE_RF24_MAX					(99)
 
-#define IF_TYPE_RF24_ME						IF_TYPE_RF24_AC
+    #define IF_TYPE_RF24_ME						IF_TYPE_RF24_AC
 
-/** APP interface, communication via socket interface
- *
- */
-#define IF_TYPE_APP_MIN						(100)
-#define IF_TYPE_APP_GW						(100)
-#define IF_TYPE_APP_GI						(101)
-#define IF_TYPE_APP_MAX						(119)
+    /** APP interface, communication via socket interface
+    *
+    */
+    #define IF_TYPE_APP_MIN						(100)
+    #define IF_TYPE_APP_GW						(100)
+    #define IF_TYPE_APP_GI						(101)
+    #define IF_TYPE_APP_MAX						(119)
 
-/** UART interface
- *
- */
-#define IF_TYPE_UART_GW_MIN					(120)
-#define IF_TYPE_UART_GW						(120)
-#define IF_TYPE_UART_AC						(121)
-#define IF_TYPE_UART_GW_MAX					(140)
+    /** UART interface
+    *
+    */
+    #define IF_TYPE_UART_GW_MIN					(120)
+    #define IF_TYPE_UART_GW						(120)
+    #define IF_TYPE_UART_AC						(121)
+    #define IF_TYPE_UART_GW_MAX					(140)
 
 
-typedef struct {
-	uint8_t is_power_on_reset;
-} boot_app_share_data_t;
+    typedef struct {
+        uint8_t is_power_on_reset;
+    } boot_app_share_data_t;
 
-typedef enum {
-    GAME_MODE_SINGLE = 0,
-    GAME_MODE_COM,
-} game_mode_t;
+    typedef enum {
+        GAME_MODE_SINGLE = 0,
+        GAME_MODE_COM,
+    } game_mode_t;
 
-typedef struct {
-    game_mode_t mode;   // Single hay COM
-    uint16_t score;
-    uint16_t high_score;
-} app_data_t;
+    typedef enum {
+        GAME_DIFF_EASY   = 1,   // thêm 1 mồi
+        GAME_DIFF_NORMAL = 2,   // 2 mồi
+        GAME_DIFF_HARD   = 3,   // 3 mồi
+    } game_diff_t;
 
-/******************************************************************************
-* RS485-MODBUS
-*******************************************************************************/
-#if defined (TASK_MBMASTER_EN)
-extern xMBHandle xMBMMaster;
-extern app_data_t app_data;
+    typedef struct {
+        game_mode_t mode;   // Single hay COM
+        game_diff_t difficulty;
+        uint16_t score;
+        uint16_t high_score;
+    } app_data_t;
+    
 
-#endif
-#endif //__APP_DATA_H__
+    /******************************************************************************
+    * RS485-MODBUS
+    *******************************************************************************/
+    #if defined (TASK_MBMASTER_EN)
+    extern xMBHandle xMBMMaster;
+    extern app_data_t app_data;
+
+    #endif
+    #endif //__APP_DATA_H__

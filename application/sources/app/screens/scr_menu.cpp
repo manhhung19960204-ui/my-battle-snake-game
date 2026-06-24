@@ -2,6 +2,9 @@
 #include "scr_menu.h"
 #define TOTAL_MENU_ITEMS (sizeof(menu_list) / sizeof(menu_item_t))
 
+extern void scr_setting_handle(ak_msg_t* msg);
+extern view_screen_t scr_setting;
+
 static void view_scr_menu();
 
 typedef struct {
@@ -86,7 +89,7 @@ void scr_menu_handle(ak_msg_t *msg) {
                 SCREEN_TRAN(scr_game_handle, &scr_game);
                 break;
             case 2: // Setting
-                // SCREEN_TRAN(scr_setting_handle, &scr_setting);
+                SCREEN_TRAN(scr_setting_handle, &scr_setting);
                 break;
             case 3: // Exit
                 SCREEN_BACK();
