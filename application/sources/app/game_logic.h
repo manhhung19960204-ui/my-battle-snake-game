@@ -31,8 +31,11 @@ typedef struct {
 typedef struct {
     snake_t player;
     snake_t com;        
+    snake_t  obstacle;
     point_t  food[FOOD_MAX]; 
-    uint8_t  food_count;      
+    uint8_t  food_count;     
+    bool     has_obstacle;  // level 2+: có snake cản
+    bool     has_wall;      // level 3: có tường (chết khi ra biên) 
     uint16_t tick;
     uint16_t max_tick;  
     bool running;
