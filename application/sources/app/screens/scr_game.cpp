@@ -57,14 +57,7 @@ view_screen_t scr_game = {
             for (int i = 0; i < game.obstacle.length; i++) {
                 int ox = 1 + game.obstacle.body[i].x * CELL_SIZE;
                 int oy = 1 + game.obstacle.body[i].y * CELL_SIZE;
-                if (i == 0) {
-                    // Đầu obstacle: fill đặc toàn ô
-                    view_render.fillRect(ox, oy, CELL_SIZE-1, CELL_SIZE-1, WHITE);
-                } else {
-                    // Thân obstacle: chỉ 2 pixel chéo góc để phân biệt với player/COM
-                    view_render.fillRect(ox,            oy,            2, 2, WHITE);
-                    view_render.fillRect(ox+CELL_SIZE-3, oy+CELL_SIZE-3, 2, 2, WHITE);
-                }
+                view_render.fillRect(ox+1, oy+1, CELL_SIZE-3, CELL_SIZE-3, WHITE);
             }
         }
     

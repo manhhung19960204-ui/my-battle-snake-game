@@ -18,11 +18,28 @@ static void    com_ai(void);
 static void    obstacle_ai(void);
 
 void game_init(void) {
-    uint8_t diff = (uint8_t)app_data.difficulty;
-    game.food_count   = (diff >= 1) ? 2 : 1;
-    game.has_obstacle = (diff >= 2);
-    game.has_wall     = (diff >= 3);
+    // 1. Reset trạng thái cơ bản ban đầu
+    game.obstacle.alive = false;
+    game.obstacle.length = 0;
 
+    game.tick     = 0;
+    game.max_tick = 300;
+    game.running  = true;
+
+    // 2. Thiết lập độ khó: NẾU LÀ CHẾ ĐỘ COM THÌ MỚI ÁP DỤNG 3 CẤP ĐỘ SETTING
+    if (app_data.mode == GAME_MODE_COM) {
+        uint8_t diff = (uint8_t)app_data.difficulty;
+        game.food_count   = (diff >= 1) ? 2 : 1;
+        game.has_obstacle = (diff >= 2);
+        game.has_wall     = (diff >= 3);
+    } else {
+        // Cấu hình mặc định cho chế độ Single (ví dụ: 1 mồi, không vật cản, xuyên tường)
+        game.food_count   = 1;
+        game.has_obstacle = false;
+        game.has_wall     = false; 
+    }
+
+    // 3. Khởi tạo Player
     game.player.length  = 3;
     game.player.dir     = DIR_RIGHT;
     game.player.score   = 0;
@@ -31,6 +48,7 @@ void game_init(void) {
     game.player.body[1] = {2, 5};
     game.player.body[2] = {1, 5};
 
+    // 4. Khởi tạo COM (nếu đúng mode)
     if (app_data.mode == GAME_MODE_COM) {
         game.com.length  = 3;
         game.com.dir     = DIR_LEFT;
@@ -41,6 +59,7 @@ void game_init(void) {
         game.com.body[2] = {18, 5};
     }
 
+    // 5. Khởi tạo Obstacle (nếu game có bật obstacle)
     if (game.has_obstacle) {
         game.obstacle.length  = 4;
         game.obstacle.dir     = DIR_DOWN;
@@ -52,49 +71,78 @@ void game_init(void) {
         game.obstacle.body[3] = {10, 4};
     }
 
-    game.tick     = 0;
-    game.max_tick = 300;
-    game.running  = true;
+    // 6. Sinh mồi
     spawn_all_food();
 }
 
 void game_tick(void) {
     if (!game.running) return;
 
-    if (app_data.mode == GAME_MODE_COM && game.com.alive) com_ai();
-    if (game.has_obstacle && game.obstacle.alive) obstacle_ai();
-
-    if (game.player.alive) move_snake(&game.player);
-    if (app_data.mode == GAME_MODE_COM && game.com.alive) move_snake(&game.com);
-    if (game.has_obstacle && game.obstacle.alive) move_snake(&game.obstacle);
-
-    // Va chạm player
-    if (game.player.alive) {
-        bool dead = check_self(&game.player);
-        if (!dead && game.has_wall)  dead = check_wall(&game.player);
-        if (!dead && game.has_obstacle && game.obstacle.alive)
-            dead = check_hit(&game.player, &game.obstacle);
-        if (!dead && app_data.mode == GAME_MODE_COM && game.com.alive)
-            dead = check_hit(&game.player, &game.com);
-        if (dead) game.player.alive = false;
-    }
-
-    // Va chạm COM
     if (app_data.mode == GAME_MODE_COM && game.com.alive) {
-        bool dead = check_self(&game.com);
-        if (!dead && game.has_wall)  dead = check_wall(&game.com);
-        if (!dead && game.has_obstacle && game.obstacle.alive)
-            dead = check_hit(&game.com, &game.obstacle);
-        if (!dead && game.player.alive)
-            dead = check_hit(&game.com, &game.player);
-        if (dead) game.com.alive = false;
+        com_ai();
+    }
+    if (game.has_obstacle && game.obstacle.alive) {
+        obstacle_ai();
     }
 
-    // Va chạm obstacle -> hồi sinh
+    // Di chuyển
+    if (game.player.alive) move_snake(&game.player);
+    if (app_data.mode == GAME_MODE_COM && game.com.alive) {
+        move_snake(&game.com);
+    }
     if (game.has_obstacle && game.obstacle.alive) {
-        bool dead = check_self(&game.obstacle);
-        if (!dead && game.has_wall) dead = check_wall(&game.obstacle);
-        if (dead) {
+        move_snake(&game.obstacle);
+    }
+
+    // Player đụng tường hoặc tự cắn
+    if (check_wall(&game.player) || check_self(&game.player)) {
+        game.player.alive = false;
+        game.running = false;
+        return;
+    }
+
+    if (app_data.mode == GAME_MODE_COM) {
+        // Player đụng thân COM → chết
+        if (check_hit(&game.player, &game.com)) {
+            game.player.alive = false;
+            game.running = false;
+            return;
+        }
+
+        // COM đụng tường/tự cắn → hồi sinh
+        if (check_wall(&game.com) || check_self(&game.com)) {
+            game.com.length   = 3;
+            game.com.dir      = DIR_LEFT;
+            game.com.body[0]  = {16, 5};
+            game.com.body[1]  = {17, 5};
+            game.com.body[2]  = {18, 5};
+            game.com.alive    = true;
+        }
+
+        // COM đụng player (đụng thân/đuôi của player)
+        if (check_hit(&game.com, &game.player)) {
+            
+            bool is_multi_snake_setting = (app_data.difficulty >= 2); // Ví dụ: Setting cấp 2 hoặc 3 bật chế độ nhiều rắn/đặc biệt
+
+            if (is_multi_snake_setting) {
+                game.com.alive = false; 
+            } else {
+                game.com.alive = false;
+                game.running = false; // Dừng game để hàm game_is_over() trả về true và hiển thị You Win
+            }
+        }
+    }
+
+    // Player đụng obstacle → chết
+    if (game.has_obstacle && game.obstacle.alive) {
+        if (check_hit(&game.player, &game.obstacle)) {
+            game.player.alive = false;
+            game.running = false;
+            return;
+        }
+
+        // Obstacle đụng tường → hồi sinh
+        if (check_wall(&game.obstacle) || check_self(&game.obstacle)) {
             game.obstacle.body[0] = {10, 1};
             game.obstacle.body[1] = {10, 2};
             game.obstacle.body[2] = {10, 3};
@@ -103,16 +151,77 @@ void game_tick(void) {
         }
     }
 
+    // Ăn mồi
     if (game.player.alive) try_eat_food(&game.player);
     if (app_data.mode == GAME_MODE_COM && game.com.alive) try_eat_food(&game.com);
 
-    if (app_data.mode == GAME_MODE_SINGLE) {
-        if (!game.player.alive) game.running = false;
-    } else {
+    // Đếm thời gian
+    if (app_data.mode == GAME_MODE_COM) {
         game.tick++;
-        if (game.tick >= game.max_tick) game.running = false;
-        if (!game.player.alive || !game.com.alive) game.running = false;
+        if (game.tick >= game.max_tick) {
+            game.running = false;
+        }
     }
+
+    // Single mode: player chết → game over
+    if (app_data.mode == GAME_MODE_SINGLE && !game.player.alive) {
+        game.running = false;
+    }
+
+    // if (!game.running) return;
+
+    // if (app_data.mode == GAME_MODE_COM && game.com.alive) com_ai();
+    // if (game.has_obstacle && game.obstacle.alive) obstacle_ai();
+
+    // if (game.player.alive) move_snake(&game.player);
+    // if (app_data.mode == GAME_MODE_COM && game.com.alive) move_snake(&game.com);
+    // if (game.has_obstacle && game.obstacle.alive) move_snake(&game.obstacle);
+
+    // // Va chạm player
+    // if (game.player.alive) {
+    //     bool dead = check_self(&game.player);
+    //     if (!dead && game.has_wall)  dead = check_wall(&game.player);
+    //     if (!dead && game.has_obstacle && game.obstacle.alive)
+    //         dead = check_hit(&game.player, &game.obstacle);
+    //     if (!dead && app_data.mode == GAME_MODE_COM && game.com.alive)
+    //         dead = check_hit(&game.player, &game.com);
+    //     if (dead) game.player.alive = false;
+    // }
+
+    // // Va chạm COM
+    // if (app_data.mode == GAME_MODE_COM && game.com.alive) {
+    //     bool dead = check_self(&game.com);
+    //     if (!dead && game.has_wall)  dead = check_wall(&game.com);
+    //     if (!dead && game.has_obstacle && game.obstacle.alive)
+    //         dead = check_hit(&game.com, &game.obstacle);
+    //     if (!dead && game.player.alive)
+    //         dead = check_hit(&game.com, &game.player);
+    //     if (dead) game.com.alive = false;
+    // }
+
+    // // Va chạm obstacle -> hồi sinh
+    // if (game.has_obstacle && game.obstacle.alive) {
+    //     bool dead = check_self(&game.obstacle);
+    //     if (!dead && game.has_wall) dead = check_wall(&game.obstacle);
+    //     if (dead) {
+    //         game.obstacle.body[0] = {10, 1};
+    //         game.obstacle.body[1] = {10, 2};
+    //         game.obstacle.body[2] = {10, 3};
+    //         game.obstacle.body[3] = {10, 4};
+    //         game.obstacle.dir = DIR_DOWN;
+    //     }
+    // }
+
+    // if (game.player.alive) try_eat_food(&game.player);
+    // if (app_data.mode == GAME_MODE_COM && game.com.alive) try_eat_food(&game.com);
+
+    // if (app_data.mode == GAME_MODE_SINGLE) {
+    //     if (!game.player.alive) game.running = false;
+    // } else {
+    //     game.tick++;
+    //     if (game.tick >= game.max_tick) game.running = false;
+    //     if (!game.player.alive || !game.com.alive) game.running = false;
+    // }
 }
 
 void game_player_turn(uint8_t dir) {
